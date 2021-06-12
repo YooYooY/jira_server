@@ -29,6 +29,7 @@
     "@typescript-eslint/no-misused-promises": 0,
     "import/prefer-default-export": 0,
     "import/no-cycle": 0,
+    "class-methods-use-this":0,
     "prettier/prettier": 0,
     "import/extensions": [
       "error",

@@ -46,20 +46,20 @@ const isNilOrEmptyString = (value: Value): boolean =>
 // 整合 typeorm 的错误信息
 export const generateErrors = (
   fieldValues: FieldValues,
-  FieldValidators: FieldValidators
+  fieldValidators: FieldValidators
 ): FieldErrors => {
   const fieldErrors: FieldErrors = {};
 
-  Object.entries(FieldValidators).forEach(([fieldName, validators]) => {
+  Object.entries(fieldValidators).forEach(([fieldName, validators]) => {
     [validators].flat().forEach(validator => {
       const errorMessage = validator(fieldValues[fieldName], fieldValues);
+
       if (errorMessage !== false && !fieldErrors[fieldName]) {
         fieldErrors[fieldName] = errorMessage;
       }
     });
   });
-
-  return fieldValues;
+  return fieldErrors;
 };
 
 export default is;
