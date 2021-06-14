@@ -10,4 +10,5 @@ jira项目的api服务
 
 ### 说明
 
-- 校验工具 utils/validation.ts
+- [x] 校验工具 （utils/validation.ts）
+- [x] 错误捕获与处理（errors）
