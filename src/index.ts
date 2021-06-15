@@ -8,6 +8,7 @@ import router from "@/routes";
 import { handleError } from "@/middleware/errors";
 import { RouteNotFoundError } from "@/errors";
 import createDatabaseConnection from "@/database/createConnection";
+import { addRespondToResponse } from "./middleware/response";
 
 const establishDatabaseConnection = async (): Promise<void> => {
   try {
@@ -25,6 +26,7 @@ const initializeExpress = (): void => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+  app.use(addRespondToResponse);
   app.use("/api/v1", router);
 
   app.use((req, _res, next) => next(new RouteNotFoundError(req.originalUrl)));

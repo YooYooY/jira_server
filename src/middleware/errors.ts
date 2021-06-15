@@ -10,7 +10,10 @@ export const handleError: ErrorRequestHandler = (error, _req, res, _next) => {
   const clientError = isErrorSafeForClient
     ? pick(error, ["message", "code", "status", "data"])
     : {
-        message: "Something went wrong, please contact out support.",
+        message:
+          process.env.NODE_ENV === "development"
+            ? error.message
+            : "Something went wrong, please contact out support.",
         code: "INTERNAL_ERROR",
         status: 500,
         data: {}
