@@ -2,7 +2,6 @@ import { User } from "@/entities";
 import { catchErrors } from "@/errors";
 import { createEntity, deleteEntity, findEntityOrThrow, updateEntity } from "@/utils/typeorm";
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
 
 export const all = catchErrors(
   async (_req: Request, res: Response): Promise<void> => {

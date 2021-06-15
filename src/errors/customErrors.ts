@@ -28,3 +28,9 @@ export class EntityNotFoundError extends CustomError {
     super(`${entityName} not found.`, "ENTITY_NOT_FOUND", 404);
   }
 }
+
+export class InvalidTokenError extends CustomError {
+  constructor(message = "Authentication token is invalid.") {
+    super(message, "INVALID_TOKEN", 401);
+  }
+}
