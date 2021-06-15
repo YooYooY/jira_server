@@ -16,3 +16,15 @@ export class RouteNotFoundError extends CustomError {
     super(`Route '${originalUrl}' does not exist.`, "ROUTE_NOT_FOUND", 404);
   }
 }
+
+export class BadUserInputError extends CustomError {
+  constructor(errorData: ErrorData) {
+    super("There were validation errors.", "BAD_USER_INPUT", 400, errorData);
+  }
+}
+
+export class EntityNotFoundError extends CustomError {
+  constructor(entityName: string) {
+    super(`${entityName} not found.`, "ENTITY_NOT_FOUND", 404);
+  }
+}

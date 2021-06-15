@@ -1,6 +1,6 @@
 import { User } from "@/entities";
 import { catchErrors } from "@/errors";
-import { generateErrors } from "@/utils/validation";
+import { createEntity, deleteEntity, findEntityOrThrow, updateEntity } from "@/utils/typeorm";
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 
@@ -13,62 +13,28 @@ export const all = catchErrors(
 
 export const one = catchErrors(
   async (req: Request, res: Response): Promise<void> => {
-    const userRepository = getRepository(User);
-    const { id } = req.params;
-    const user = await userRepository.findOne(id);
-    if (user) {
-      res.json(user);
-    } else {
-      res.statusCode = 404;
-      res.json({ id, error: `id ${id} no exist` });
-    }
+    const user = await findEntityOrThrow(User,req.params.id);
+    res.json(user);
   }
 );
 
 export const create = catchErrors(
   async (req: Request, res: Response): Promise<void> => {
-    const user = User.create(req.body || {});
-    // 检查参数是否正确
-    const errorFields = generateErrors(user, User.validations);
-    if (Object.keys(errorFields).length > 0) {
-      res.json(errorFields);
-      return;
-    }
-
-    const userRepository = getRepository(User);
-    await userRepository.save(user);
-    res.json({
-      message: "success"
-    });
+    const user = await createEntity(User, req.body);
+    res.json(user);
   }
 );
 
 export const update = catchErrors(
   async (req: Request, res: Response): Promise<void> => {
-    const userRepository = getRepository(User);
-    const { id } = req.params;
-    const user = await userRepository.findOne(id);
-    if (user) {
-      const result = await userRepository.save({ ...user, ...req.body });
-      res.json(result);
-    } else {
-      res.statusCode = 404;
-      res.json({ id, error: `id ${id} no exist` });
-    }
+    const user = await updateEntity(User, req.params.id, req.body);
+    res.json(user);
   }
 );
 
 export const remove = catchErrors(
   async (req: Request, res: Response): Promise<void> => {
-    const userRepository = getRepository(User);
-    const { id } = req.params;
-    const userToRemove = await userRepository.findOne(id);
-    if (userToRemove) {
-      const result = await userRepository.remove(userToRemove);
-      res.json({ success: result });
-    } else {
-      res.statusCode = 404;
-      res.json({ id, error: `id ${id} no exist` });
-    }
+    const user = await deleteEntity(User, req.params.id);
+    res.json(user)
   }
 );
