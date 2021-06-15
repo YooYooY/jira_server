@@ -1,19 +1,27 @@
 import { User } from "@/entities";
 import { catchErrors } from "@/errors";
 import { signToken } from "@/utils/authToken";
-import { createEntity, deleteEntity, findEntityOrThrow, updateEntity } from "@/utils/typeorm";
+import {
+  createEntity,
+  deleteEntity,
+  findEntityOrThrow,
+  updateEntity,
+  findEntityByCount
+} from "@/utils/typeorm";
 import { Request, Response } from "express";
+import { FindManyOptions } from "typeorm";
 
 export const all = catchErrors(
-  async (_req: Request, res: Response): Promise<void> => {
-    const data = await User.find();
+  async (req: Request, res: Response): Promise<void> => {
+    
+    const data = await findEntityByCount(User, req.query);
     res.respond(data);
   }
 );
 
 export const one = catchErrors(
   async (req: Request, res: Response): Promise<void> => {
-    const user = await findEntityOrThrow(User,req.params.id);
+    const user = await findEntityOrThrow(User, req.params.id);
     res.respond(user);
   }
 );
@@ -37,6 +45,6 @@ export const update = catchErrors(
 export const remove = catchErrors(
   async (req: Request, res: Response): Promise<void> => {
     const user = await deleteEntity(User, req.params.id);
-    res.respond(user)
+    res.respond(user);
   }
 );

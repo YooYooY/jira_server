@@ -1,6 +1,6 @@
 import { User } from "@/entities";
 import { EntityNotFoundError, BadUserInputError } from "@/errors";
-import { FindOneOptions } from "typeorm";
+import { FindOneOptions, FindManyOptions } from "typeorm";
 import { generateErrors } from "./validation";
 
 type EntityConstructor = typeof User;
@@ -16,6 +16,36 @@ export const createEntity = async <T extends EntityConstructor>(
 ): Promise<InstanceType<T>> => {
   const instance = Constructor.create(input);
   return validateAnySaveEntity(instance as InstanceType<T>);
+};
+
+export const findEntityByCount = async <T extends EntityConstructor>(
+  Constructor: T,
+  query: FindManyOptions & Partial<Record<"page" | "size", string>>
+): Promise<{
+  data: Array<InstanceType<T>>;
+  total: number;
+}> => {
+  const { size, page, ...restOpts } = query;
+  const options = {} as FindManyOptions;
+
+  if (size) {
+    options.take = parseInt(size);
+    if (page) {
+      let skip = (parseInt(page) - 1) * options.take;
+      skip = skip < 0 ? 0 : skip;
+      options.skip = skip;
+    }
+  }
+
+  const [data, total] = await Constructor.findAndCount({
+    ...options,
+    ...restOpts
+  });
+
+  return {
+    data,
+    total
+  };
 };
 
 export const findEntityOrThrow = async <T extends EntityConstructor>(
@@ -52,14 +82,14 @@ export const updateEntity = async <T extends EntityConstructor>(
 ) => {
   const instance = await findEntityOrThrow(Constructor, id);
   Object.assign(instance, input);
-  return validateAnySaveEntity(instance)
+  return validateAnySaveEntity(instance);
 };
 
 export const deleteEntity = async <T extends EntityConstructor>(
   Constructor: T,
   id: number | string
-): Promise<InstanceType<T>> =>{
-  const instance = await findEntityOrThrow(Constructor,id);
+): Promise<InstanceType<T>> => {
+  const instance = await findEntityOrThrow(Constructor, id);
   await instance.remove();
   return instance;
-}
+};
