@@ -21,14 +21,14 @@ export const createEntity = async <T extends EntityConstructor>(
 export const findEntityByCount = async <T extends EntityConstructor>(
   Constructor: T,
   query: FindManyOptions &
-    Partial<Record<"size" | "page" | "select" | "relations", string>>
+    Partial<Record<"size" | "page" | "select" | "relations" | "where", string>>
 ): Promise<{
   data: Array<InstanceType<T>>;
   total: number;
 }> => {
-  const { size, page, select, relations, ...restOpts } = query;
+  const { size, page, select, relations, where, ...restOpts } = query;
   const options = {} as FindManyOptions;
-
+  // 分页
   if (size) {
     options.take = parseInt(size);
     if (page) {
@@ -37,11 +37,24 @@ export const findEntityByCount = async <T extends EntityConstructor>(
       options.skip = skip;
     }
   }
+  // 选择查询
   if (select) {
     options.select = select.split(",").filter(Boolean);
   }
+  // 关联查询
   if (relations) {
     options.relations = relations.split(",").filter(Boolean);
+  }
+  // 搜索查询
+  if (where) {
+    options.where = where
+      .split(",")
+      .filter(Boolean)
+      .reduce((memo, prev) => {
+        const [key, value] = prev.split("=");
+        memo[key] = value;
+        return memo;
+      }, {} as Record<string, string>);
   }
 
   const [data, total] = await Constructor.findAndCount({
