@@ -20,12 +20,13 @@ export const createEntity = async <T extends EntityConstructor>(
 
 export const findEntityByCount = async <T extends EntityConstructor>(
   Constructor: T,
-  query: FindManyOptions & Partial<Record<"page" | "size", string>>
+  query: FindManyOptions &
+    Partial<Record<"size" | "page" | "select" | "relations", string>>
 ): Promise<{
   data: Array<InstanceType<T>>;
   total: number;
 }> => {
-  const { size, page, ...restOpts } = query;
+  const { size, page, select, relations, ...restOpts } = query;
   const options = {} as FindManyOptions;
 
   if (size) {
@@ -35,6 +36,12 @@ export const findEntityByCount = async <T extends EntityConstructor>(
       skip = skip < 0 ? 0 : skip;
       options.skip = skip;
     }
+  }
+  if (select) {
+    options.select = select.split(",").filter(Boolean);
+  }
+  if (relations) {
+    options.relations = relations.split(",").filter(Boolean);
   }
 
   const [data, total] = await Constructor.findAndCount({

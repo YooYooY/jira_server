@@ -9,11 +9,9 @@ import {
   findEntityByCount
 } from "@/utils/typeorm";
 import { Request, Response } from "express";
-import { FindManyOptions } from "typeorm";
 
 export const all = catchErrors(
   async (req: Request, res: Response): Promise<void> => {
-    
     const data = await findEntityByCount(User, req.query);
     res.respond(data);
   }
