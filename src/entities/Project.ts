@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { User } from ".";
 
+
 @Entity()
 class Project extends BaseEntity {
   static validations = {

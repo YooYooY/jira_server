@@ -19,8 +19,11 @@ export const all = catchErrors(
 
 export const one = catchErrors(
   async (req: Request, res: Response): Promise<void> => {
-    const user = await findEntityOrThrow(User, req.params.id);
-    res.respond(user);
+    console.log(`req.currentUser`, req.currentUser)
+    const user = await findEntityOrThrow(User, req.params.id, {
+      relations: ["project"]
+    });
+    res.respond({ user });
   }
 );
 
@@ -36,13 +39,13 @@ export const create = catchErrors(
 export const update = catchErrors(
   async (req: Request, res: Response): Promise<void> => {
     const user = await updateEntity(User, req.params.id, req.body);
-    res.respond(user);
+    res.respond({user});
   }
 );
 
 export const remove = catchErrors(
   async (req: Request, res: Response): Promise<void> => {
     const user = await deleteEntity(User, req.params.id);
-    res.respond(user);
+    res.respond({user});
   }
 );

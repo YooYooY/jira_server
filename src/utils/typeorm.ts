@@ -7,7 +7,8 @@ type EntityConstructor = typeof User | typeof Project;
 type EntityInstance = User | Project;
 
 const entities: Record<string, EntityConstructor> = {
-  User
+  User,
+  Project
 };
 
 export const createEntity = async <T extends EntityConstructor>(
