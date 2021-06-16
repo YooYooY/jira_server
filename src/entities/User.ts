@@ -1,5 +1,15 @@
 import is from "@/utils/validation";
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import {
+  Entity,
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  RelationId
+} from "typeorm";
+import { Project } from ".";
 
 @Entity()
 class User extends BaseEntity {
@@ -28,6 +38,15 @@ class User extends BaseEntity {
 
   @UpdateDateColumn({ type: "timestamp" })
   updatedAt: Date;
+
+  @ManyToOne(
+    () => Project,
+    project => project.users
+  )
+  project: Project;
+
+  @RelationId((user: User) => user.project)
+  projectId: number;
 }
 
 export default User;
