@@ -1,10 +1,10 @@
-import { User } from "@/entities";
+import { Project, User } from "@/entities";
 import { EntityNotFoundError, BadUserInputError } from "@/errors";
 import { FindOneOptions, FindManyOptions } from "typeorm";
 import { generateErrors } from "./validation";
 
-type EntityConstructor = typeof User;
-type EntityInstance = User;
+type EntityConstructor = typeof User | typeof Project;
+type EntityInstance = User | Project;
 
 const entities: Record<string, EntityConstructor> = {
   User
@@ -15,7 +15,7 @@ export const createEntity = async <T extends EntityConstructor>(
   input: Partial<InstanceType<T>>
 ): Promise<InstanceType<T>> => {
   const instance = Constructor.create(input);
-  return validateAnySaveEntity(instance as InstanceType<T>);
+  return validateAndSaveEntity(instance as InstanceType<T>);
 };
 
 export const findEntityByCount = async <T extends EntityConstructor>(
@@ -80,7 +80,7 @@ export const findEntityOrThrow = async <T extends EntityConstructor>(
   return instance;
 };
 
-export const validateAnySaveEntity = async <T extends EntityInstance>(
+export const validateAndSaveEntity = async <T extends EntityInstance>(
   instance: T
 ): Promise<T> => {
   const Constructor = entities[instance.constructor.name];
@@ -92,7 +92,7 @@ export const validateAnySaveEntity = async <T extends EntityInstance>(
     }
   }
 
-  return instance.save();
+  return instance.save() as Promise<T>;
 };
 
 export const updateEntity = async <T extends EntityConstructor>(
@@ -102,7 +102,7 @@ export const updateEntity = async <T extends EntityConstructor>(
 ) => {
   const instance = await findEntityOrThrow(Constructor, id);
   Object.assign(instance, input);
-  return validateAnySaveEntity(instance);
+  return validateAndSaveEntity(instance);
 };
 
 export const deleteEntity = async <T extends EntityConstructor>(
