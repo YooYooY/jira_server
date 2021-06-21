@@ -17,7 +17,9 @@ router.get("/user/:id", UserController.one);
 router.patch("/user/:id", UserController.update);
 router.delete("/user/:id", UserController.remove);
 
+router.get("/project", ProjectController.getProjectWithUsers);
 router.post("/project", ProjectController.create);
+router.patch("/project", ProjectController.update);
 
 
 export default router;

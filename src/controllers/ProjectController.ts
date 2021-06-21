@@ -1,6 +1,6 @@
 import { Project } from "@/entities";
 import { catchErrors } from "@/errors";
-import { createEntity, findEntityOrThrow } from "@/utils/typeorm";
+import { createEntity, findEntityOrThrow, updateEntity } from "@/utils/typeorm";
 
 export const create = catchErrors(async (req, res) => {
   req.body.users = [req.currentUser];
@@ -14,3 +14,8 @@ export const getProjectWithUsers = catchErrors(async (req, res) => {
   });
   res.respond({ project });
 });
+
+export const update = catchErrors(async (req, res)=>{
+  const project = await updateEntity(Project, req.currentUser.projectId, req.body);
+  res.respond({project})
+})

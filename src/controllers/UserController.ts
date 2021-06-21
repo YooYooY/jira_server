@@ -19,7 +19,6 @@ export const all = catchErrors(
 
 export const one = catchErrors(
   async (req: Request, res: Response): Promise<void> => {
-    console.log(`req.currentUser`, req.currentUser)
     const user = await findEntityOrThrow(User, req.params.id, {
       relations: ["project"]
     });
