@@ -1,14 +1,16 @@
-import { Project, User } from "@/entities";
+import { Issue, Project, User, Comment } from "@/entities";
 import { EntityNotFoundError, BadUserInputError } from "@/errors";
 import { FindOneOptions, FindManyOptions } from "typeorm";
 import { generateErrors } from "./validation";
 
-type EntityConstructor = typeof User | typeof Project;
-type EntityInstance = User | Project;
+type EntityConstructor = typeof User | typeof Project | typeof Issue | typeof Comment;
+type EntityInstance = User | Project | Issue | Comment;
 
 const entities: Record<string, EntityConstructor> = {
   User,
-  Project
+  Project,
+  Issue,
+  Comment
 };
 
 export const createEntity = async <T extends EntityConstructor>(

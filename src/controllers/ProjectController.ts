@@ -1,6 +1,7 @@
 import { Project } from "@/entities";
 import { catchErrors } from "@/errors";
-import { createEntity, findEntityOrThrow, updateEntity } from "@/utils/typeorm";
+import { issuePartital } from "@/serializers/issues";
+import { createEntity, deleteEntity, findEntityOrThrow, updateEntity } from "@/utils/typeorm";
 
 export const create = catchErrors(async (req, res) => {
   req.body.users = [req.currentUser];
@@ -8,14 +9,19 @@ export const create = catchErrors(async (req, res) => {
   res.respond({ project });
 });
 
-export const getProjectWithUsers = catchErrors(async (req, res) => {
+export const getProjectWithUsersAndIssues = catchErrors(async (req, res) => {
   const project = await findEntityOrThrow(Project, req.currentUser.projectId, {
-    relations: ["users"]
+    relations: ["users", "issues"]
   });
-  res.respond({ project });
+  res.respond({ ...project, issues: project.issues.map(issuePartital) });
 });
 
 export const update = catchErrors(async (req, res)=>{
   const project = await updateEntity(Project, req.currentUser.projectId, req.body);
+  res.respond({project})
+})
+
+export const remove = catchErrors(async (req, res)=>{
+  const project = await deleteEntity(Project, req.params.id);
   res.respond({project})
 })

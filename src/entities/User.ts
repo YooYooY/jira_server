@@ -7,9 +7,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  RelationId
+  RelationId,
+  ManyToMany,
+  OneToMany
 } from "typeorm";
-import { Project } from ".";
+import { Issue, Project, Comment } from ".";
 
 @Entity()
 class User extends BaseEntity {
@@ -38,6 +40,18 @@ class User extends BaseEntity {
 
   @UpdateDateColumn({ type: "timestamp" })
   updatedAt: Date;
+
+  @OneToMany(
+    () => Comment,
+    comment => comment.user
+  )
+  comments: Comment[];
+
+  @ManyToMany(
+    () => Issue,
+    issue => issue.users
+  )
+  issues: Issue[];
 
   @ManyToOne(
     () => Project,

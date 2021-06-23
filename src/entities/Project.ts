@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
-import { User } from ".";
+import { Issue, User } from ".";
 
 
 @Entity()
@@ -40,6 +40,12 @@ class Project extends BaseEntity {
 
   @UpdateDateColumn({ type: "timestamp" })
   updatedAt: Date;
+
+  @OneToMany(
+    () => Issue,
+    issue => issue.project
+  )
+  issues: Issue[];
 
   @OneToMany(
     () => User,
