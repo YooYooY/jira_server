@@ -1,4 +1,4 @@
-import { IssuePriority, IssueStatus, IssueType } from "@/constans/issues";
+import { IssuePriority, IssueStatus, IssueType } from "@/constants/issues";
 import is from "@/utils/validation";
 import striptags from "striptags";
 import { BaseEntity, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId, UpdateDateColumn } from "typeorm";
@@ -44,7 +44,7 @@ class Issue extends BaseEntity {
   estimate: number | null;
 
   @Column("int", { nullable: true })
-  timeSpend: number | null;
+  timeSpent: number | null;
 
   @Column("int", { nullable: true })
   timeRemaining: number | null;

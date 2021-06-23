@@ -1,4 +1,4 @@
-import { ProjectCategory } from "@/constans/projects";
+import { ProjectCategory } from "@/constants/projects";
 import is from "@/utils/validation";
 import {
   BaseEntity,
